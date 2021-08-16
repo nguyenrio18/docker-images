@@ -36,14 +36,17 @@ RUN chown -R kafka $KAFKA_HOME && \
 #
 # Download Kafka
 #
-RUN curl -fSL -o /tmp/kafka.tgz $(curl --stderr /dev/null https://www.apache.org/dyn/closer.cgi\?as_json\=1 | sed -rn 's/.*"preferred":.*"(.*)"/\1/p')$KAFKA_URL_PATH || curl -fSL -o /tmp/kafka.tgz https://archive.apache.org/dist/$KAFKA_URL_PATH
+# RUN curl -fSL -o /tmp/kafka.tgz $(curl --stderr /dev/null https://www.apache.org/dyn/closer.cgi\?as_json\=1 | sed -rn 's/.*"preferred":.*"(.*)"/\1/p')$KAFKA_URL_PATH || curl -fSL -o /tmp/kafka.tgz https://archive.apache.org/dist/$KAFKA_URL_PATH
+ADD ./tmp /tmp
 
 #
 # Verify the contents and then install ...
 #
+# RUN echo "$SHA512HASH /tmp/kafka.tgz" | sha512sum -c - &&\
+#     tar -xzf /tmp/kafka.tgz -C $KAFKA_HOME --strip-components 1 &&\
+#     rm -f /tmp/kafka.tgz
 RUN echo "$SHA512HASH /tmp/kafka.tgz" | sha512sum -c - &&\
-    tar -xzf /tmp/kafka.tgz -C $KAFKA_HOME --strip-components 1 &&\
-    rm -f /tmp/kafka.tgz
+    tar -xzf /tmp/kafka.tgz -C $KAFKA_HOME --strip-components 1
 
 COPY ./log4j.properties $KAFKA_HOME/config/log4j.properties
 RUN mkdir $KAFKA_HOME/config.orig &&\

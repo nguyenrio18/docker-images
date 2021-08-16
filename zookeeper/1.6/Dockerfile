@@ -34,14 +34,17 @@ RUN mkdir $ZK_HOME/data && \
 # Download and install Zookeeper
 #
 #RUN curl -fSL -o /tmp/zookeeper.tar.gz $(curl --stderr /dev/null https://www.apache.org/dyn/closer.cgi\?as_json\=1 | sed -rn 's/.*"preferred":.*"(.*)"/\1/p')$ZK_URL_PATH || curl -fSL -o /tmp/zookeeper.tgz https://archive.apache.org/dist/$ZK_URL_PATH
-RUN curl -fSL -o /tmp/zookeeper.tar.gz https://archive.apache.org/dist/$ZK_URL_PATH
+# RUN curl -fSL -o /tmp/zookeeper.tar.gz https://archive.apache.org/dist/$ZK_URL_PATH
+ADD ./tmp /tmp
 
 #
 # Verify the contents and then install ...
 #
+# RUN echo "$SHA256HASH /tmp/zookeeper.tar.gz" | sha512sum -c - &&\
+#     tar -xzf /tmp/zookeeper.tar.gz -C $ZK_HOME --strip-components 1 &&\
+#     rm -f /tmp/zookeeper.tar.gz
 RUN echo "$SHA256HASH /tmp/zookeeper.tar.gz" | sha512sum -c - &&\
-    tar -xzf /tmp/zookeeper.tar.gz -C $ZK_HOME --strip-components 1 &&\
-    rm -f /tmp/zookeeper.tar.gz
+    tar -xzf /tmp/zookeeper.tar.gz -C $ZK_HOME --strip-components 1
 
 # Remove unnecessary files
 RUN rm -r $ZK_HOME/docs
